@@ -97,11 +97,13 @@ def get_customers_no_properties(base_url, config, max_workers=20):
 def fetch_properties(base_url, config, customer):
     max_retries = 1
     customer_id = customer["id"]
-    url = f"{base_url}/v1/customers/{customer_id}/properties?include=addresses"
+    url = f"{base_url}/v1/customers/{customer_id}/properties"
     headers = make_headers(config, base_url)
-
+    params = {
+        "include_addresses": True
+    }
     for attempt in range(max_retries + 1):
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, params=params)
         if response.status_code == 401:
             if attempt == max_retries:
                 response.raise_for_status()
